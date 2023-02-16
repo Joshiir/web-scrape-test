@@ -9,52 +9,41 @@ axios.get('https://cdn.adimo.co/clients/Adimo/test/index.html')
         let $ = cheerio.load(response.data)
 
         const cheese = []
-        let count = 0
+        let items = 0
         let total = 0
 
         $('div.item').each(function(i, elem){
             title = $(elem).find('h1').text();
             imageUrl = $(elem).find('img').attr('src');
-            currentPrice = $(elem).find('span.price').text();
-            oldPrice = $(elem).find('span.oldPrice').text();
+            currentPrice = $(elem).find('span.price').text().replace('£', '');
+            oldPrice = $(elem).find('span.oldPrice').text().replace('£', '');
 
             cheese.push({
-                title, 
-                imageUrl, 
-                currentPrice, 
+                title,
+                imageUrl,
+                currentPrice,
                 oldPrice
-            })
+            });
 
-            //count iterations
-            count =+ i + 1
+            //count iterations to find total number of items
+            items =+ i + 1
 
             //average price
-            total =+ currentPrice
-            
-            average = total / count;
-        })
+            total = total + parseFloat(currentPrice)
+            average = total / items;
+        });
+
+        cheese.push({
+            items,
+            average
+        });
 
         // Save to JSON
-        // let data = JSON.stringify(cheese);
-        // fs.writeFileSync('test.json', data);
+        let data = JSON.stringify(cheese);
+        fs.writeFileSync('cheese.json', data);
 
-
-        // console.log(cheese);
-
-        console.log(count);
-
-        console.log(currentPrice);
     })
     .catch(function(error) {
         //Print error if any occured
         console.error('Error!: ', error.message)
     })
-
-// Could you please process the html and save out a JSON file with:
-
-// Each product as it's own object containing.
-    // title
-    // image url
-    // price and any discount.
-// The total number of items
-// The average price of all items.
