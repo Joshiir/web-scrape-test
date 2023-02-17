@@ -1,6 +1,6 @@
 # web-scrape-test
 
-## install packagaes
+## install packages
 npm install
 
 ## export JSON
