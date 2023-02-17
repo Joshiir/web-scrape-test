@@ -2,7 +2,9 @@ const axios = require('axios')
 const cheerio = require('cheerio')
 const fs = require('fs')
 
-const mainUrl = 'https://www.thewhiskyexchange.com/search?q=cider'
+const search = 'beer'
+const mainUrl = 'https://www.thewhiskyexchange.com/search?q='
+const fullUrl = '${mainUrl}${search}'
 const wine = []
 let items = 0
 let total = 0
@@ -51,4 +53,4 @@ async function getWine(url) {
     }
 };
 
-getWine(mainUrl);
+getWine(fullUrl);
