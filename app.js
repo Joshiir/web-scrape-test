@@ -40,7 +40,7 @@ axios.get('https://cdn.adimo.co/clients/Adimo/test/index.html')
 
         // Save to JSON
         let data = JSON.stringify(cheese);
-        fs.writeFileSync('cheese.json', data);
+        fs.writeFileSync('cheese_output.json', data);
 
     })
     .catch(function(error) {
