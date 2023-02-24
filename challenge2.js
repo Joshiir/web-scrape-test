@@ -3,10 +3,8 @@ const cheerio = require('cheerio')
 const fs = require('fs')
 
 const search = 'beer'
-const mainUrl = 'https://www.thewhiskyexchange.com/search?q='
-const fullUrl = '${mainUrl}${search}'
+const mainUrl = 'https://www.thewhiskyexchange.com/search?q=' + search
 const wine = []
-let items = 0
 let total = 0
 
 async function getWine(url) {
@@ -25,18 +23,24 @@ async function getWine(url) {
                     currentPrice,
                 });
 
-                    // concatenate the url to show more pages
-                    if ($('div.pagination-bar__section.pagination-bar__section--paging.js-pagination-bar__section--paging nav a').attr('href') != '#') {
-                        show_more = url + $('div.pagination-bar__section.pagination-bar__section--paging.js-pagination-bar__section--paging nav a').attr('href')
-                        getWine(show_more);
-                    };
+                //Find total of all current prices
+                total = total + parseFloat(currentPrice)
+            });
 
-                    //average price
-                    total = total + parseFloat(currentPrice)
-                    average = total / items
-                });
+        let link = url.slice(0, url.lastIndexOf('/'))
 
+        // concatenate the url to show more pages
+        if ($('.paging__button--next').attr('href') != '#') {
+            show_more = link + $('.paging__button--next').attr('href')
+            getWine(show_more);
+        } else {
+            // The length of the array
             items = wine.length;
+
+            // Average price
+            numAverage = total / items;
+            fixedAverage = numAverage.toFixed(2);
+            average = parseFloat(fixedAverage);
 
             wine.push({
                 items,
@@ -45,12 +49,15 @@ async function getWine(url) {
 
             // Save to JSON
             let data = JSON.stringify(wine);
-            fs.writeFileSync('challenge1_output.json', data);
+            fs.writeFileSync('challenge2_output.json', data);
 
         }
+    }
+
     catch(error) {
-        console.error(error);
+        //Print error if any occured
+        console.error('Error!: ', error.message);
     }
 };
 
-getWine(fullUrl);
+getWine(mainUrl);
